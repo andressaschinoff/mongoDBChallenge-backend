@@ -72,19 +72,12 @@ const update = async (req, res) => {
   }
 
   const id = req.params.id;
-  const newName = req.body.name;
-  const newSubject = req.body.subject;
-  const newType = req.body.type;
-  const newValue = req.body.value;
+  const name = req.body.name;
+  const subject = req.body.subject;
+  const type = req.body.type;
+  const value = req.body.value;
 
   try {
-    const grade = await gradeModel.findById(id);
-
-    const name = newName ? newName : grade.name;
-    const subject = newSubject ? newSubject : grade.subject;
-    const type = newType ? newType : grade.type;
-    const value = newValue ? newValue : grade.value;
-
     await gradeModel.findByIdAndUpdate(id, {
       name: name,
       subject: subject,
@@ -117,18 +110,7 @@ const remove = async (req, res) => {
 };
 
 const removeAll = async (req, res) => {
-  const name = req.query.name;
-
-  //condicao para o filtro no findAll
-  var condition = name
-    ? { name: { $regex: new RegExp(name), $options: 'i' } }
-    : {};
   try {
-    const findGradeToRemove = await gradeModel.find(condition);
-    if (findGradeToRemove.length < 1) {
-      res.send('Este nome não está entre os dados do banco');
-    }
-
     await gradeModel.remove(condition);
     res.send({
       message: `Grades excluidos`,
